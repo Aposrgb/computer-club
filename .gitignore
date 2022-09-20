@@ -1,0 +1,11 @@
+/logs
+/symfony
+/.idea/
+
+###> symfony/framework-bundle ###
+/club/.env.local
+/club/.env.local.php
+/club/.env.*.local
+/club/var/
+/club/vendor/
+###< symfony/framework-bundle ###

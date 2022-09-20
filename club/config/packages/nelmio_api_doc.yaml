@@ -1,0 +1,57 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: My App
+            description: This is an awesome app!
+            version: 1.0.0
+        components:
+            schemas:
+                ApiException:
+                    type: object
+                    properties:
+                        error:
+                            type: object
+                            properties:
+                                status:
+                                    type: integer
+                                message:
+                                    type: string
+                                detail:
+                                    type: string
+                                validationError:
+                                    type: object
+                                    properties:
+                                        query:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    name:
+                                                        type: string
+                                                    message:
+                                                        type: string
+                                        body:
+                                            type: array
+                                            description: Параметры из body
+                                            items:
+                                                type: object
+                                                properties:
+                                                    name:
+                                                        type: string
+                                                    message:
+                                                        type: string
+
+            securitySchemes:
+                ApiKeyAuth:
+                    type: apiKey
+                    in: header
+                    name: apiKey
+        security:
+            - ApiKeyAuth: []
+    areas:
+        default:
+            path_patterns: [ ^/api ]
+            host_patterns: [ ^api\. ]
+        api:
+            path_patterns:
+                - ^/api(?!/doc$)

@@ -1,0 +1,52 @@
+version: '3.3'
+services:
+  postgres:
+    container_name: postgres-club
+    image: postgres
+    ports:
+      - 5460:5432
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: club_db
+    networks:
+      - computer-club
+  
+  php-fpm:
+    container_name: php-fpm-club
+    build:
+      context: ./build/php-fpm
+      dockerfile: Dockerfile
+      args:
+        - XDEBUG_MODE
+        - XDEBUG_CLIENT_HOST
+    environment:
+      - SYMFONY_ENV
+      - PHP_IDE_CONFIG
+    ports:
+      - 9612:9000
+    volumes:
+      - ./symfony:/var/www/symfony:cached
+      - ./logs/symfony:/var/www/symfony/var/log:cached
+      - ./club/:/var/www/club/:delegated
+    depends_on:
+      - postgres
+    networks:
+      - computer-club
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx-club
+    ports:
+      - 8560:80
+    depends_on:
+      - php-fpm
+    networks:
+      - computer-club
+    volumes:
+      - ./build/nginx/local:/etc/nginx/conf.d/
+      - ./build/nginx/client_max_body_size.conf:/etc/nginx/conf.d/client_max_body_size.conf
+      - ./club/public:/var/www/club/public:rw,cached
+
+networks:
+  computer-club:
