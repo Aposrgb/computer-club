@@ -16,7 +16,8 @@
         "symfony/asset": "^6.1",
         "zircote/swagger-php": "^4.4",
         "symfony/dependency-injection": "^6.1",
-        "symfony/twig-bundle": "^6.1"
+        "symfony/twig-bundle": "^6.1",
+        "sensio/framework-extra-bundle": "^6.2"
     },
     "config": {
         "allow-plugins": {
