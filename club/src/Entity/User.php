@@ -44,6 +44,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Device::class, cascade: ['persist', 'remove'])]
     private Collection $devices;
 
+    #[ORM\OneToOne(mappedBy: 'owner', cascade: ['persist', 'remove'])]
+    private ?Computer $computer = null;
+
     public function __construct()
     {
         $this->status = UserStatus::ACTIVE->value;
@@ -228,6 +231,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $device->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getComputer(): ?Computer
+    {
+        return $this->computer;
+    }
+
+    public function setComputer(?Computer $computer): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($computer === null && $this->computer !== null) {
+            $this->computer->setOwner(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($computer !== null && $computer->getOwner() !== $this) {
+            $computer->setOwner($this);
+        }
+
+        $this->computer = $computer;
 
         return $this;
     }
