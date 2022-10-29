@@ -1,0 +1,62 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: fantasy;
+}
+
+.background{
+    background: black;
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.header-text{
+    color: snow;
+    font-weight: unset;
+    width: 80vw;
+    margin-top: 3vh;
+    text-align: left;
+}
+
+.schedule-card{
+    height: 70vh;
+    background: #cad7ff;
+    width: 80vw;
+    border-radius: 5px;
+    box-shadow: 0px -20px 0px 0px white;
+    margin-top: 6vh;
+}
+
+.label-input{
+    padding: 10px;
+}
+
+.filter-div {
+    width: 50vw;
+    margin: auto;
+    margin-top: 3vh;
+}
+
+.schedule-main {
+    height: 40vh;
+    background: #8396d6;
+    width: 50vw;
+    border-radius: 3px;
+    margin: auto;
+    margin-top: 2vh;
+}
+
+.approve-button{
+    background: lawngreen;
+    outline: unset;
+    border-radius: 2px;
+    padding: 5px;
+    border: unset;
+    float: right;
+}
+.approve-button:hover {
+    box-shadow: inset 0px 0px 20px 0px #919191a3;
+}

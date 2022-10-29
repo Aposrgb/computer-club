@@ -8,3 +8,8 @@ app.swagger_ui:
     path: /{area}/doc
     methods: GET
     defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+
+main:
+    resource: '../src/Controller'
+    type:     annotation
+    trailing_slash_on_root: false

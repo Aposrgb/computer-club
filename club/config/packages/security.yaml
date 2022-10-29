@@ -33,6 +33,8 @@ security:
     access_control:
          - { path: ^/api/doc, roles: PUBLIC_ACCESS }
          - { path: ^/api/security/registration, roles: PUBLIC_ACCESS }
+         - { path: ^/api/security/auth, roles: PUBLIC_ACCESS }
+         - { path: ^/api/schedule/week, roles: PUBLIC_ACCESS }
          - { path: ^/api/*, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }
 

@@ -9,18 +9,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UserDTO
 {
     /** @OA\Property(type="string") */
-    #[Assert\NotBlank(groups: ['registration'])]
-    #[Assert\Email(groups: ['registration'])]
-    #[Assert\Length(min: 6, max: 30, groups: ['registration'])]
-    #[Assert\Type(type: 'string', groups: ['registration'])]
-    #[Groups(groups: ['registration'])]
+    #[Assert\NotBlank(groups: ['registration', 'authorization'])]
+    #[Assert\Email(groups: ['registration', 'authorization'])]
+    #[Assert\Length(min: 6, max: 30, groups: ['registration', 'authorization'])]
+    #[Assert\Type(type: 'string', groups: ['registration', 'authorization'])]
+    #[Groups(groups: ['registration', 'authorization'])]
     private $email;
 
     /** @OA\Property(type="string") */
-    #[Assert\NotBlank(groups: ['registration'])]
-    #[Assert\Length(min: 6, max: 30, groups: ['registration'])]
-    #[Assert\Type(type: 'string', groups: ['registration'])]
-    #[Groups(groups: ['registration'])]
+    #[Assert\NotBlank(groups: ['registration', 'authorization'])]
+    #[Assert\Length(min: 6, max: 30, groups: ['registration', 'authorization'])]
+    #[Assert\Type(type: 'string', groups: ['registration', 'authorization'])]
+    #[Groups(groups: ['registration', 'authorization'])]
     private $password;
 
     /** @OA\Property(type="string") */

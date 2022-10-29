@@ -1,0 +1,1 @@
+*/15 * * * * php bin/console schedule:check:date

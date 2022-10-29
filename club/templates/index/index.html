@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Расписание</title>
+    <script src="/scripts/index.js"></script>
+    <link rel="stylesheet" href="/styles/style.css" />
+    <link rel="stylesheet" href="/styles/loader/slick-loader.min.css" />
+    <script src="/scripts/loader/slick-loader.min.js"></script>
+</head>
+<body>
+    <div class="background">
+        <h1 class="header-text">Поиск свободных компьютеров</h1>
+        <div class="schedule-card">
+            <div class="schedule-main"></div>
+            <div class="filters">
+                <div class="filter-div">
+                    <label class="label-input" for="count_people">Кол-во людей</label>
+                    <input id="count_people" type="number" min="1" />
+                </div>
+                <div class="filter-div">
+                    <label class="label-input" for="calendar">Дата</label>
+                    <input id="calendar" type="datetime-local" />
+                </div>
+                <div class="filter-div">
+                    <button style="" class="approve-button" onclick="getSchedule()">Применить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

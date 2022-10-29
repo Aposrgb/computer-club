@@ -5,11 +5,15 @@ namespace App\Helper\Mapper;
 use App\Entity\User;
 use App\Helper\DTO\UserDTO;
 use App\Helper\Interface\MapperInterface;
-use App\Helper\Trait\HelperTrait;
+use App\Service\HelperService;
 
 class UserMapper implements MapperInterface
 {
-    use HelperTrait;
+    public function __construct(
+        protected HelperService $helperService
+    )
+    {
+    }
 
     /**
      * @param UserDTO $dto
@@ -19,10 +23,10 @@ class UserMapper implements MapperInterface
     {
         $entity = $entity ?? new User();
         return $entity
-            ->setName($this->getActualValue($entity->getName(), $dto->getName()))
-            ->setPhone($this->getActualValue($entity->getPhone(), $dto->getPhone()))
-            ->setEmail($this->getActualValue($entity->getEmail(), $dto->getEmail()))
-            ->setSurname($this->getActualValue($entity->getSurname(), $dto->getSurname()));
+            ->setName($this->helperService->getActualValue($entity->getName(), $dto->getName()))
+            ->setPhone($this->helperService->getActualValue($entity->getPhone(), $dto->getPhone()))
+            ->setEmail($this->helperService->getActualValue($entity->getEmail(), $dto->getEmail()))
+            ->setSurname($this->helperService->getActualValue($entity->getSurname(), $dto->getSurname()));
     }
 
     public function entityToDTO($entity)

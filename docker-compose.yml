@@ -1,5 +1,19 @@
 version: '3.3'
 services:
+  cron:
+    build:
+      context: ./build/cron
+    container_name: cron-club
+    restart: always
+    volumes:
+      - ./public:/var/www/club/public:rw,cached
+      - ./club:/var/www/club:delegated
+      - ./cron:/club:delegated
+    depends_on:
+      - php-fpm
+    networks:
+      - computer-club
+  
   postgres:
     container_name: postgres-club
     image: postgres
