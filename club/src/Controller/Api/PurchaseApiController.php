@@ -5,15 +5,12 @@ namespace App\Controller\Api;
 use App\Helper\EnumStatus\ScheduleStatus;
 use App\Helper\EnumType\PurchaseType;
 use App\Helper\Exception\ApiException;
-use App\Repository\ScheduleRepository;
 use App\Service\ScheduleService;
 use App\Service\ValidatorService;
 use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @OA\Tag(name="Purchase")

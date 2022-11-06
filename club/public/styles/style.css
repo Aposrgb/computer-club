@@ -4,9 +4,18 @@
     font-family: fantasy;
 }
 
+.head {
+    width: 80vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: 20vw;
+    margin-top: 3vh;
+    margin-right: 20vw;
+}
+
 .background{
     background: black;
-    width: 100vw;
     height: 100vh;
     display:flex;
     align-items: center;
@@ -16,8 +25,6 @@
 .header-text{
     color: snow;
     font-weight: unset;
-    width: 80vw;
-    margin-top: 3vh;
     text-align: left;
 }
 
@@ -32,6 +39,7 @@
 
 .label-input{
     padding: 10px;
+    font-size: 22px;
 }
 
 .filter-div {
@@ -55,8 +63,26 @@
     border-radius: 2px;
     padding: 5px;
     border: unset;
-    float: right;
+    font-size: 18px;
 }
+
 .approve-button:hover {
     box-shadow: inset 0px 0px 20px 0px #919191a3;
+}
+.input-div {
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.auth_button{
+    border-radius: 1vh;
+    font-size: 20px;
+    padding: 0px 2vw 0px 2vw;
+}
+
+.input{
+    font-size:  18px;
 }

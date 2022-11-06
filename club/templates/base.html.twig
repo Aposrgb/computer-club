@@ -1,19 +1,31 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
-
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="/scripts/base.js"></script>
+    <link rel="stylesheet" href="/styles/style.css" />
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+<div id="auth" style="position: fixed">
+    <div style="left: 50%;transform: translate(-50%);position: absolute;width: 50vw;height: 85vh;background: #83a5ff;margin: 5vh auto auto;border-radius: 1vh;display: flex;flex-direction: column">
+        <div class="input-div">
+            <label class="label-input" for="login">Логин</label>
+            <input class="input" id="login" type="email"/>
+        </div>
+        <div class="input-div">
+            <label class="label-input" for="password">Пароль</label>
+            <input class="input" id="password" type="password"/>
+        </div>
+        <div class="input-div">
+            <button style="float: right;margin-top: 3vh" class="approve-button" onclick="auth()">Вход</button>
+            <button style="float: right;margin-top: 3vh" class="approve-button" onclick="register()">Регистрация</button>
+        </div>
+    </div>
+    <div onclick="closeAuth(this)" class="auth" style="width: 100vw; height: 100vh; background: #00000096;" ></div>
+</div>
+{% block body %}
+{% endblock %}
+</body>
 </html>
