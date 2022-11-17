@@ -4,9 +4,11 @@ namespace App\Service;
 
 use App\Entity\Schedule;
 use App\Entity\User;
+use App\Helper\EnumStatus\ScheduleStatus;
 use App\Helper\Exception\ApiException;
 use App\Repository\ScheduleRepository;
 use Symfony\Component\HttpFoundation\Response;
+use function Webmozart\Assert\Tests\StaticAnalysis\contains;
 
 class ScheduleService
 {
@@ -14,6 +16,18 @@ class ScheduleService
         protected ScheduleRepository $scheduleRepository
     )
     {
+    }
+
+    /** @param Schedule[] $schedules */
+    public function checkTimeSchedulesUser(array $schedules, Schedule $newSchedule): void
+    {
+        $newDateStart = $newSchedule->getDateStart();
+        $newEndStart = (clone $newDateStart)->modify($newSchedule->getHours() . ' hours');
+        $schedules = array_filter($schedules, function ($item) {
+            return !($item->getStatus() == ScheduleStatus::ARCHIVE->value or
+                $item->getStatus() == ScheduleStatus::CANCELLED->value);
+        });
+        $this->checkTimeSchedules($newDateStart, $newEndStart, $schedules);
     }
 
     public function getScheduleByStatusAndUser(int $id, ?int $status, ?User $user): Schedule
@@ -39,13 +53,21 @@ class ScheduleService
     {
         $endDay = (clone $date)->modify($hours . ' hours');
         $schedules = $this->scheduleRepository->findScheduleByDay($endDay, $computerId);
+        $this->checkTimeSchedules($date, $endDay, $schedules);
+    }
+
+    private function checkTimeSchedules(\DateTimeInterface $newDateStart, \DateTimeInterface $newEndStart, array $schedules): void
+    {
         foreach ($schedules as $schedule) {
             $dateStartSession = $schedule->getDateStart();
             $dateEndSession = (clone $dateStartSession)->modify($schedule->getHours() . ' hours');
-            if ($date > $dateStartSession && $date < $dateEndSession) {
+            if ($newDateStart >= $dateStartSession && $newDateStart <= $dateEndSession) {
                 throw new ApiException(message: 'В данное время комьютер занят');
             }
-            if ($endDay < $dateEndSession && $endDay > $dateStartSession) {
+            if ($newEndStart <= $dateEndSession && $newEndStart >= $dateStartSession) {
+                throw new ApiException(message: 'В данное время комьютер занят');
+            }
+            if ($newDateStart <= $dateStartSession && $newEndStart >= $dateEndSession) {
                 throw new ApiException(message: 'В данное время комьютер занят');
             }
         }

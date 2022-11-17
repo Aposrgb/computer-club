@@ -31,13 +31,12 @@ use Symfony\Component\Serializer\SerializerInterface;
  *     description="Assecc denied",
  *     @OA\JsonContent(ref="#/components/schemas/ApiException")
  * )
- * @IsGranted("ROLE_ADMIN")
  */
 #[Route('/room')]
 class RoomApiController extends AbstractController
 {
     /**
-     * Создание комнаты
+     * Создание комнаты (Админ)
      *
      * @OA\RequestBody(
      *     @OA\JsonContent(
@@ -62,6 +61,7 @@ class RoomApiController extends AbstractController
      * )
      *
      */
+    #[IsGranted("ROLE_ADMIN")]
     #[Route('', name: 'create_room', methods: ['POST'])]
     public function createRoom(
         Request             $request,
@@ -86,5 +86,26 @@ class RoomApiController extends AbstractController
             status: Response::HTTP_CREATED,
             context: ['groups' => ['get_room']]
         );
+    }
+
+    /**
+     * Получение всех комнат
+     *
+     * @OA\Response(
+     *     response="200",
+     *     description="success",
+     *     @OA\JsonContent(
+     *          @OA\Property(property="data", type="object",
+     *              ref=@Model(type="App\Entity\Room", groups={"get_room"})
+     *          )
+     *     )
+     * )
+     */
+    #[Route('', name: 'get_rooms', methods: ["GET"])]
+    public function getRooms(
+        RoomRepository $repository,
+    ): JsonResponse
+    {
+        return $this->json(data: ['data' => $repository->findAll()], context: ['groups'=> ['get_room']]);
     }
 }

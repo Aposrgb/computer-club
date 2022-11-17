@@ -18,11 +18,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(groups: ['get_schedule'])]
+    #[Groups(groups: ['get_schedule','get_user'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(groups: ['get_schedule'])]
+    #[Groups(groups: ['get_schedule','get_user'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -36,11 +36,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $status = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(groups: ['get_schedule'])]
+    #[Groups(groups: ['get_schedule','get_user'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(groups: ['get_schedule'])]
+    #[Groups(groups: ['get_schedule','get_user'])]
     private ?string $surname = null;
 
     #[ORM\Column(length: 255, nullable: true)]

@@ -8,24 +8,58 @@
     {% endblock %}
 </head>
 <body>
-<div id="auth" style="position: fixed">
+<div id="auth" style="position: fixed; display: none">
     <div style="left: 50%;transform: translate(-50%);position: absolute;width: 50vw;height: 85vh;background: #83a5ff;margin: 5vh auto auto;border-radius: 1vh;display: flex;flex-direction: column">
-        <div class="input-div">
-            <label class="label-input" for="login">Логин</label>
-            <input class="input" id="login" type="email"/>
+        <div id="authWindow" class="input-div" >
+            <div class="input-div">
+                <label class="label-input" for="login">Логин</label>
+                <input class="input" id="login" type="email"/>
+            </div>
+            <div class="input-div">
+                <label class="label-input" for="password">Пароль</label>
+                <input class="input" id="password" type="password"/>
+            </div>
+        </div>
+        <div id="registerWindow" class="input-div" style="display: none;">
+            <div class="input-div">
+                <label class="label-input" for="loginReg">Логин</label>
+                <input class="input" id="loginReg" type="email"/>
+            </div>
+            <div class="input-div">
+                <label class="label-input" for="passwordReg">Пароль</label>
+                <input class="input" id="passwordReg" type="password"/>
+            </div>
+            <div class="input-div">
+                <label class="label-input" for="name">Имя</label>
+                <input class="input" id="name" type="text"/>
+            </div>
+            <div class="input-div">
+                <label class="label-input" for="surname">Фамилия</label>
+                <input class="input" id="surname" type="text"/>
+            </div>
+            <div class="input-div">
+                <label class="label-input" for="passwordReg">Телефон</label>
+                <input class="input" id="phone" type="tel"/>
+            </div>
         </div>
         <div class="input-div">
-            <label class="label-input" for="password">Пароль</label>
-            <input class="input" id="password" type="password"/>
-        </div>
-        <div class="input-div">
+            <p id="error" style="color:red; margin-top: 1vh; margin-bottom: 1vh"></p>
             <button style="float: right;margin-top: 3vh" class="approve-button" onclick="auth()">Вход</button>
             <button style="float: right;margin-top: 3vh" class="approve-button" onclick="register()">Регистрация</button>
         </div>
     </div>
     <div onclick="closeAuth(this)" class="auth" style="width: 100vw; height: 100vh; background: #00000096;" ></div>
 </div>
+<div class="background">
+    <div class="head" style="display: flex; flex-direction: row">
+        <h1 class="header-text">Поиск свободных компьютеров</h1>
+        <button id="name_user" class="header-text"></button>
+        <button id="button_auth" class="auth_button" onclick="closeAuth()"> Вход </button>
+    </div>
+
 {% block body %}
 {% endblock %}
+
+</div>
 </body>
 </html>

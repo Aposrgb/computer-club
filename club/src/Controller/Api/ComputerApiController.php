@@ -3,7 +3,6 @@
 namespace App\Controller\Api;
 
 use App\Helper\DTO\ComputerDTO;
-use App\Helper\Mapper\ComputerMapper;
 use App\Repository\ComputerRepository;
 use App\Service\ComputerService;
 use App\Service\ValidatorService;
@@ -37,7 +36,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ComputerApiController extends AbstractController
 {
     /**
-     *  Создание комьютера
+     *  Создание комьютера (Админ)
      *
      * @OA\Response(
      *     response="201",
@@ -48,6 +47,7 @@ class ComputerApiController extends AbstractController
      *          )
      *     )
      * )
+     *
      * @OA\Response(
      *     response="404",
      *     description="Not found",

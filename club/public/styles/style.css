@@ -26,6 +26,8 @@
     color: snow;
     font-weight: unset;
     text-align: left;
+    font-size: 30px;
+    background: none;
 }
 
 .schedule-card{

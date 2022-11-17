@@ -38,7 +38,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class EntityTypeApiController extends AbstractController
 {
     /**
-     * Создание типа
+     * Создание типа (Админ)
      *
      * @OA\RequestBody(
      *     @OA\MediaType(

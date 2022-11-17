@@ -1,1 +1,1 @@
-*/15 * * * * php bin/console schedule:check:date
+*/5 * * * * php bin/console schedule:check:date

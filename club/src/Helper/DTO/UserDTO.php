@@ -10,7 +10,7 @@ class UserDTO
 {
     /** @OA\Property(type="string") */
     #[Assert\NotBlank(groups: ['registration', 'authorization'])]
-    #[Assert\Email(groups: ['registration', 'authorization'])]
+    #[Assert\Email(message: 'Неверное поле почты', groups: ['registration', 'authorization'])]
     #[Assert\Length(min: 6, max: 30, groups: ['registration', 'authorization'])]
     #[Assert\Type(type: 'string', groups: ['registration', 'authorization'])]
     #[Groups(groups: ['registration', 'authorization'])]

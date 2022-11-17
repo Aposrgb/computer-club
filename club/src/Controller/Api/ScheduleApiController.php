@@ -2,12 +2,14 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\User;
 use App\Helper\DTO\ScheduleDTO;
 use App\Helper\Exception\ApiException;
 use App\Helper\Mapper\ScheduleMapper;
 use App\Repository\ScheduleRepository;
 use App\Service\ComputerService;
 use App\Service\ScheduleService;
+use App\Service\UserService;
 use App\Service\ValidatorService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
@@ -58,7 +60,7 @@ class ScheduleApiController extends AbstractController
         ScheduleRepository $scheduleRepository
     ): JsonResponse
     {
-        $week = $request->request->get('offset', 0);
+        $week = $request->query->get('offset', 0);
         $date = (new \DateTime())
             ->modify('monday this week')
             ->modify($week . ' week')
@@ -131,12 +133,14 @@ class ScheduleApiController extends AbstractController
         );
         $validatorService->validate($scheduleDTO, ['create_schedule']);
         $schedule = $scheduleMapper->dtoToEntity($scheduleDTO);
+        /** @var User $user */
+        $user = $this->getUser();
         $schedule
-            ->setOwner($this->getUser())
+            ->setOwner($user)
             ->setComputer(
                 $computerService->getComputerById($scheduleDTO->getComputerId())
             );
-        if($schedule->getDateStart() < new \DateTime()){
+        if ($schedule->getDateStart() < new \DateTime()) {
             throw new ApiException(message: 'Нельзя забронировать');
         }
         $scheduleService->checkTimeSchedule(
@@ -144,7 +148,7 @@ class ScheduleApiController extends AbstractController
             hours: $schedule->getHours(),
             computerId: $schedule->getComputer()->getId()
         );
-
+        $scheduleService->checkTimeSchedulesUser($user->getSchedules()->toArray(), $schedule);
         $scheduleRepository->add($schedule, true);
         return $this->json(
             data: ['data' => $schedule],
