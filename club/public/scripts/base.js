@@ -1,16 +1,21 @@
 let isAuth = false
+const ACTION_EXIT = 'exit'
+
 
 document.addEventListener('DOMContentLoaded', () => {
     checkApiKey()
 })
 
-function closeAuth() {
+function closeAuth(isNone) {
     let el = document.getElementById('auth')
+    if (isNone) {
+        el.style.display = 'none'
+        return
+    }
     el.style.display = el.style.display === "block" ? "none" : "block"
 }
 
 function auth() {
-    clearError()
     if (switchAuth()) {
         return;
     }
@@ -34,12 +39,13 @@ function auth() {
             if (checkError(data)) {
                 return
             }
-            saveToken(data['data']['token'])
+            if (saveToken(data['data']['token'])) {
+                closeAuth(true)
+            }
         })
 }
 
 function register() {
-    clearError()
     if (switchRegister()) {
         return;
     }
@@ -54,19 +60,19 @@ function register() {
     if (validate(passwordValue, 6)) {
         return
     }
-    if (validate(name, 2)){
+    if (validate(name, 2)) {
         return
     }
-    if (validate(surname, 2)){
+    if (validate(surname, 2)) {
         return
     }
     let body = {
         "email": loginValue,
         "password": passwordValue,
-        "name" : name,
-        "surname" : surname
+        "name": name,
+        "surname": surname
     }
-    if(phone.length > 0){
+    if (phone.length > 0) {
         body['phone'] = phone
     }
     fetch('/api/security/registration', {
@@ -78,7 +84,9 @@ function register() {
             if (checkError(data)) {
                 return
             }
-            saveToken(data['data']['token'])
+            if (saveToken(data['data']['token'])) {
+                closeAuth(true)
+            }
         })
 
 }
@@ -91,18 +99,21 @@ function validate(value, length) {
 }
 
 function throwWindowError(msg) {
-    document.getElementById('error').innerText = msg
+    let el = document.createElement('p')
+    el.innerText = msg
+    el.style = 'background: #ff0000ab; color: white; max-width: 200px; padding: 2vh 1vw; margin: 1vh; border-radius: 0.2vh;'
+    let error = document.getElementById('error')
+    error.append(el)
+    setTimeout(() => {
+        error.removeChild(error.lastChild)
+    }, 4000)
     return true
-}
-
-function clearError() {
-    document.getElementById('error').innerText = ''
 }
 
 function saveToken(token) {
     clearToken()
     localStorage.setItem('apiKey', token)
-    successAuth()
+    return successAuth()
 }
 
 function clearToken() {
@@ -111,12 +122,13 @@ function clearToken() {
     localStorage.removeItem('surnameUser')
     isAuth = false
     document.getElementById('button_auth').style.display = 'block'
-    document.getElementById('name_user').innerText = ''
+    document.getElementById('name_user').innerHTML = ''
     document.getElementById('name_user').removeEventListener('click', tabProfile())
+    document.getElementById('div_list').style.display = 'none'
 }
 
-function checkApiKey(){
-    if(localStorage.getItem('apiKey') !== null){
+function checkApiKey() {
+    if (localStorage.getItem('apiKey') !== null) {
         successAuth()
     }
 }
@@ -136,26 +148,38 @@ async function successAuth() {
             }
             saveDataUser(data['data'])
         })
-    checkAuthorization()
+    return checkAuthorization()
 }
 
 function checkAuthorization() {
+    if (checkCredentinals()) {
+        isAuth = true
+        document.getElementById('button_auth').style.display = 'none'
+        document.getElementById('name_user').innerText = localStorage.getItem('nameUser') + " " + localStorage.getItem('surnameUser')
+        return true
+    }
+    return false
+}
+
+function checkCredentinals() {
     let name = localStorage.getItem('nameUser')
     let surname = localStorage.getItem('surnameUser')
     let apiKey = localStorage.getItem('apiKey')
-    if(name !== null && surname !== null && apiKey !== null){
-        isAuth = true
-        document.getElementById('button_auth').style.display = 'none'
-        document.getElementById('name_user').innerText = name + " " + surname
-        document.getElementById('name_user').addEventListener('click', tabProfile())
+    return name !== null && surname !== null && apiKey !== null
+}
+
+function tabProfile() {
+    let div = document.getElementById('div_list')
+    div.style.display = div.style.display === 'none' ? 'block' : 'none'
+}
+
+function action(el) {
+    if (el.id === ACTION_EXIT) {
+        clearToken()
     }
 }
 
-function tabProfile(){
-
-}
-
-function saveDataUser(data){
+function saveDataUser(data) {
     localStorage.setItem('nameUser', data['name'])
     localStorage.setItem('surnameUser', data['surname'])
 }
@@ -171,7 +195,7 @@ function checkError(ex) {
             return throwWindowError(allError)
         }
         return throwWindowError(ex['message'])
-    } else if(ex.status === 401){
+    } else if (ex.status === 401) {
         clearToken()
         return true
     } else if (ex.status === 404) {

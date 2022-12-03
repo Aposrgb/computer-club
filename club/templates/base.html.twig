@@ -8,6 +8,9 @@
     {% endblock %}
 </head>
 <body>
+<div style="position: fixed; z-index: 100" id="error">
+
+</div>
 <div id="auth" style="position: fixed; display: none">
     <div style="left: 50%;transform: translate(-50%);position: absolute;width: 50vw;height: 85vh;background: #83a5ff;margin: 5vh auto auto;border-radius: 1vh;display: flex;flex-direction: column">
         <div id="authWindow" class="input-div" >
@@ -43,7 +46,6 @@
             </div>
         </div>
         <div class="input-div">
-            <p id="error" style="color:red; margin-top: 1vh; margin-bottom: 1vh"></p>
             <button style="float: right;margin-top: 3vh" class="approve-button" onclick="auth()">Вход</button>
             <button style="float: right;margin-top: 3vh" class="approve-button" onclick="register()">Регистрация</button>
         </div>
@@ -53,7 +55,12 @@
 <div class="background">
     <div class="head" style="display: flex; flex-direction: row">
         <h1 class="header-text">Поиск свободных компьютеров</h1>
-        <button id="name_user" class="header-text"></button>
+        <div id="name_user" class="header-text" onclick="tabProfile()"></div>
+        <div style="display: none" id="div_list" class="div_list">
+            <ul  class="list_button">
+                <li id="exit" onclick="action(this)">Выйти</li>
+            </ul>
+        </div>
         <button id="button_auth" class="auth_button" onclick="closeAuth()"> Вход </button>
     </div>
 

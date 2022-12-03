@@ -9,18 +9,25 @@
 
 {%  block body %}
         <div class="schedule-card">
-            <div class="schedule-main"></div>
+            <div id="next_back_arrows" class="arrows">
+                <div id="back_arrow" style="display: none;transform: rotate(180deg)" onclick="back()">➤</div>
+                <p id="room_number"></p>
+                <div style="display: none" id="next_arrow" onclick="next()">➤</div>
+            </div>
+            <div id="main_rooms" class="schedule-main">
+
+            </div>
             <div class="filters">
                 <div class="filter-div">
-                    <label class="label-input" for="count_people">Кол-во людей</label>
-                    <input class="input" id="count_people" type="number" min="1" />
+                    <label class="label-input" for="count_hours">Кол-во часов</label>
+                    <input class="input" id="count_hours" type="number" min="1" />
                 </div>
                 <div class="filter-div">
                     <label class="label-input" for="calendar">Дата</label>
                     <input class="input" id="calendar" type="datetime-local" />
                 </div>
                 <div class="filter-div">
-                    <button style="float: right;" class="approve-button" onclick="getSchedule()">Применить</button>
+                    <button style="float: right;" class="approve-button" onclick="getRoom()">Применить</button>
                 </div>
             </div>
         </div>

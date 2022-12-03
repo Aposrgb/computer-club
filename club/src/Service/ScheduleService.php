@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Computer;
 use App\Entity\Schedule;
 use App\Entity\User;
 use App\Helper\EnumStatus\ScheduleStatus;
@@ -71,5 +72,25 @@ class ScheduleService
                 throw new ApiException(message: 'В данное время комьютер занят');
             }
         }
+    }
+    /** @param Schedule[] $schedules */
+    public function checkTimeDateComputer(\DateTimeInterface $newDateStart, \DateTimeInterface $newEndStart, array $schedules, Computer $computer): bool
+    {
+        foreach ($schedules as $schedule) {
+            if ($schedule->getComputer()->getId() == $computer->getId()) {
+                $dateStartSession = $schedule->getDateStart();
+                $dateEndSession = (clone $dateStartSession)->modify($schedule->getHours() . ' hours');
+                if ($newDateStart >= $dateStartSession && $newDateStart <= $dateEndSession) {
+                    return false;
+                }
+                if ($newEndStart <= $dateEndSession && $newEndStart >= $dateStartSession) {
+                    return false;
+                }
+                if ($newDateStart <= $dateStartSession && $newEndStart >= $dateEndSession) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

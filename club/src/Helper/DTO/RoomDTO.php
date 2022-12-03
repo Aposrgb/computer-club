@@ -15,12 +15,6 @@ class RoomDTO
     #[Groups(['create_room'])]
     private $typeId = null;
 
-    /** @OA\Property(type="integer") */
-    #[Assert\NotBlank(groups: ['create_room'])]
-    #[Assert\Positive(groups: ['create_room'])]
-    #[Assert\Type(type: 'integer', groups: ['create_room'])]
-    #[Groups(['create_room'])]
-    private $maxCountComputers;
 
     /**
      * @return null
@@ -37,24 +31,6 @@ class RoomDTO
     public function setTypeId($typeId)
     {
         $this->typeId = $typeId;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMaxCountComputers()
-    {
-        return $this->maxCountComputers;
-    }
-
-    /**
-     * @param mixed $maxCountComputers
-     * @return RoomDTO
-     */
-    public function setMaxCountComputers($maxCountComputers)
-    {
-        $this->maxCountComputers = $maxCountComputers;
         return $this;
     }
 

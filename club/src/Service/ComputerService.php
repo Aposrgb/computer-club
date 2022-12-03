@@ -29,9 +29,6 @@ class ComputerService
             if (!$room) {
                 throw new ApiException(message: 'Не найдена комната', status: Response::HTTP_NOT_FOUND);
             }
-            if($room->getComputers()->count()+1 > $room->getMaxCountComputers()){
-                throw new ApiException(message: 'Компьютеров максимальное кол-во');
-            }
             $computer->setRoom($room);
         }
         if ($computerDTO->getTypeId()) {

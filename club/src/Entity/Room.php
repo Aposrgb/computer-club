@@ -25,10 +25,6 @@ class Room
     #[Groups(['get_room'])]
     private ?EntityType $type = null;
 
-    #[ORM\Column]
-    #[Groups(['get_room', 'get_computer'])]
-    private ?int $maxCountComputers = null;
-
     public function __construct()
     {
         $this->computers = new ArrayCollection();
@@ -78,24 +74,6 @@ class Room
     {
         $this->type = $type;
 
-        return $this;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getMaxCountComputers(): ?int
-    {
-        return $this->maxCountComputers;
-    }
-
-    /**
-     * @param int|null $maxCountComputers
-     * @return Room
-     */
-    public function setMaxCountComputers(?int $maxCountComputers): Room
-    {
-        $this->maxCountComputers = $maxCountComputers;
         return $this;
     }
 }

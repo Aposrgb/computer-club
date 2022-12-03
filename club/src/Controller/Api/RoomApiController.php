@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Helper\DTO\RoomDTO;
-use App\Helper\Mapper\RoomMapper;
+use App\Helper\Filter\RoomFilter;
 use App\Repository\RoomRepository;
 use App\Service\RoomService;
 use App\Service\ValidatorService;
@@ -69,7 +69,6 @@ class RoomApiController extends AbstractController
         RoomRepository      $roomRepository,
         SerializerInterface $serializer,
         RoomService         $service,
-        RoomMapper          $roomMapper,
     ): JsonResponse
     {
         $roomDTO = $serializer->deserialize(
@@ -78,7 +77,7 @@ class RoomApiController extends AbstractController
             'json'
         );
         $validatorService->validate($roomDTO, ['create_room']);
-        $room = $roomMapper->dtoToEntity($roomDTO);
+        $room = new Room();
         $room = $service->addEntityToRoom($roomDTO, $room);
         $roomRepository->add($room, true);
         return $this->json(
@@ -96,16 +95,45 @@ class RoomApiController extends AbstractController
      *     description="success",
      *     @OA\JsonContent(
      *          @OA\Property(property="data", type="object",
-     *              ref=@Model(type="App\Entity\Room", groups={"get_room"})
+     *              ref=@Model(type="App\Helper\Mapped\Room")
      *          )
      *     )
      * )
+     *
+     * @OA\Parameter(
+     *     in="query",
+     *     name="search[date]",
+     *     @OA\Schema(type="string", example="2022-12-12 12:00")
+     * )
+     *
+     * @OA\Parameter(
+     *     in="query",
+     *     name="search[countHours]",
+     *     @OA\Schema(type="integer")
+     * )
+     *
      */
     #[Route('', name: 'get_rooms', methods: ["GET"])]
     public function getRooms(
-        RoomRepository $repository,
+        Request             $request,
+        SerializerInterface $serializer,
+        RoomRepository      $roomRepository,
+        ValidatorService    $validatorService,
+        RoomService         $roomService,
     ): JsonResponse
     {
-        return $this->json(data: ['data' => $repository->findAll()], context: ['groups'=> ['get_room']]);
+        $query = $request->query->all();
+        /** @var RoomFilter $roomFilter */
+        $roomFilter = $serializer->deserialize(json_encode($query['search'] ?? []), RoomFilter::class, 'json');
+        $validatorService->validate($roomFilter, ['filter']);
+        $rooms = $roomRepository->findAll();
+
+        if (!$roomFilter->getDate()) {
+            $roomsMapped = $roomService->getRoomMapped($rooms);
+        } else {
+            $roomsMapped = $roomService->getRoomMappedWithFilter($roomFilter, $rooms);
+        }
+
+        return $this->json(data: ['data' => $roomsMapped]);
     }
 }
