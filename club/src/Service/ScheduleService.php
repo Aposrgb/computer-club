@@ -9,7 +9,6 @@ use App\Helper\EnumStatus\ScheduleStatus;
 use App\Helper\Exception\ApiException;
 use App\Repository\ScheduleRepository;
 use Symfony\Component\HttpFoundation\Response;
-use function Webmozart\Assert\Tests\StaticAnalysis\contains;
 
 class ScheduleService
 {
@@ -23,7 +22,7 @@ class ScheduleService
     public function checkTimeSchedulesUser(array $schedules, Schedule $newSchedule): void
     {
         $newDateStart = $newSchedule->getDateStart();
-        $newEndStart = (clone $newDateStart)->modify($newSchedule->getHours() . ' hours');
+        $newEndStart = $newSchedule->getDateEnd();
         $schedules = array_filter($schedules, function ($item) {
             return !($item->getStatus() == ScheduleStatus::ARCHIVE->value or
                 $item->getStatus() == ScheduleStatus::CANCELLED->value);
@@ -50,18 +49,18 @@ class ScheduleService
         return $schedule;
     }
 
-    public function checkTimeSchedule(\DateTimeInterface $date, int $hours, int $computerId): void
+    public function checkTimeSchedule(\DateTimeInterface $date, \DateTimeInterface $endDay, int $computerId): void
     {
-        $endDay = (clone $date)->modify($hours . ' hours');
-        $schedules = $this->scheduleRepository->findScheduleByDay($endDay, $computerId);
+        $schedules = $this->scheduleRepository->findScheduleByDay($date, $endDay, $computerId);
         $this->checkTimeSchedules($date, $endDay, $schedules);
     }
 
     private function checkTimeSchedules(\DateTimeInterface $newDateStart, \DateTimeInterface $newEndStart, array $schedules): void
     {
+        /** @var Schedule $schedule */
         foreach ($schedules as $schedule) {
             $dateStartSession = $schedule->getDateStart();
-            $dateEndSession = (clone $dateStartSession)->modify($schedule->getHours() . ' hours');
+            $dateEndSession = $schedule->getDateEnd();
             if ($newDateStart >= $dateStartSession && $newDateStart <= $dateEndSession) {
                 throw new ApiException(message: 'В данное время комьютер занят');
             }
@@ -79,7 +78,7 @@ class ScheduleService
         foreach ($schedules as $schedule) {
             if ($schedule->getComputer()->getId() == $computer->getId()) {
                 $dateStartSession = $schedule->getDateStart();
-                $dateEndSession = (clone $dateStartSession)->modify($schedule->getHours() . ' hours');
+                $dateEndSession = $schedule->getDateEnd();
                 if ($newDateStart >= $dateStartSession && $newDateStart <= $dateEndSession) {
                     return false;
                 }

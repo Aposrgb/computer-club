@@ -3,32 +3,58 @@
 {% block head %}
     <title>Расписание</title>
     <script src="/scripts/index.js"></script>
-    <link rel="stylesheet" href="/styles/loader/slick-loader.min.css" />
+    <link rel="stylesheet" href="/styles/loader/slick-loader.min.css"/>
     <script src="/scripts/loader/slick-loader.min.js"></script>
-{%  endblock %}
 
-{%  block body %}
-        <div class="schedule-card">
-            <div id="next_back_arrows" class="arrows">
-                <div id="back_arrow" style="display: none;transform: rotate(180deg)" onclick="back()">➤</div>
-                <p id="room_number"></p>
-                <div style="display: none" id="next_arrow" onclick="next()">➤</div>
-            </div>
-            <div id="main_rooms" class="schedule-main">
+    <!-- this should go after your </body> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+{% endblock %}
 
+{% block body %}
+    <div id="input_bron" style="position: fixed; background: #000000bd; display:none; height: -webkit-fill-available; width: -webkit-fill-available;">
+        <div  style="left: 50%; transform: translate(-50%); position: absolute; width: 35vw; height: 30vh; background: rgb(131, 165, 255); margin: 25vh auto auto; border-radius: 1vh; flex-direction: column">
+            <div onclick="closeBron()" class="closer">x</div>
+            <div class="input-div">
+                <label class="label-input" for="date_start">Дата начала</label>
+                <input disabled class="input" id="date_start" type="datetime-local"/>
             </div>
-            <div class="filters">
-                <div class="filter-div">
-                    <label class="label-input" for="count_hours">Кол-во часов</label>
-                    <input class="input" id="count_hours" type="number" min="1" />
-                </div>
-                <div class="filter-div">
-                    <label class="label-input" for="calendar">Дата</label>
-                    <input class="input" id="calendar" type="datetime-local" />
-                </div>
-                <div class="filter-div">
-                    <button style="float: right;" class="approve-button" onclick="getRoom()">Применить</button>
-                </div>
+            <div class="input-div">
+                <label class="label-input" for="date_end">Дата конца</label>
+                <input disabled class="input" id="date_end" type="date"/>
+            </div>
+            <div style="display: flex;justify-content: center;width: fit-content;" class="filter-div">
+                <button class="approve-button" onclick="sendBron()">Применить</button>
             </div>
         </div>
+    </div>
+    <div class="schedule-card">
+        <div id="next_back_arrows" class="arrows">
+            <div id="back_arrow" style="display: none;transform: rotate(180deg)" onclick="back()">➤</div>
+            <p id="room_number"></p>
+            <div style="display: none" id="next_arrow" onclick="next()">➤</div>
+        </div>
+        <div id="main_rooms" class="schedule-main">
+
+        </div>
+        <div id="computer_description" style="text-align: center" class="arrows">
+
+        </div>
+        <div style="display: none;" id="bron" class="filter-div">
+            <button style="float: right;" class="approve-button" onclick="bron()">Забронировать</button>
+        </div>
+        <div class="filters">
+            <div class="filter-div">
+                <label class="label-input" for="date_start_filter">Дата начала</label>
+                <input disabled class="input" id="date_start_filter" type="text"/>
+            </div>
+            <div class="filter-div">
+                <label class="label-input" for="date_end_filter">Дата конца</label>
+                <input disabled class="input" id="date_end_filter" type="text"/>
+            </div>
+            <div class="filter-div">
+                <button style="float: right;" class="approve-button" onclick="getRoom()">Применить</button>
+            </div>
+        </div>
+    </div>
 {% endblock %}

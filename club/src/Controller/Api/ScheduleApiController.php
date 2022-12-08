@@ -145,7 +145,7 @@ class ScheduleApiController extends AbstractController
         }
         $scheduleService->checkTimeSchedule(
             date: $schedule->getDateStart(),
-            hours: $schedule->getHours(),
+            endDay: $schedule->getDateEnd(),
             computerId: $schedule->getComputer()->getId()
         );
         $scheduleService->checkTimeSchedulesUser($user->getSchedules()->toArray(), $schedule);

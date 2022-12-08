@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Room;
 use App\Helper\DTO\RoomDTO;
 use App\Helper\Filter\RoomFilter;
 use App\Repository\RoomRepository;
@@ -102,14 +103,14 @@ class RoomApiController extends AbstractController
      *
      * @OA\Parameter(
      *     in="query",
-     *     name="search[date]",
+     *     name="search[startDate]",
      *     @OA\Schema(type="string", example="2022-12-12 12:00")
      * )
      *
      * @OA\Parameter(
      *     in="query",
-     *     name="search[countHours]",
-     *     @OA\Schema(type="integer")
+     *     name="search[endDate]",
+     *     @OA\Schema(type="string", example="2022-12-12 16:00")
      * )
      *
      */
@@ -128,12 +129,43 @@ class RoomApiController extends AbstractController
         $validatorService->validate($roomFilter, ['filter']);
         $rooms = $roomRepository->findAll();
 
-        if (!$roomFilter->getDate()) {
+        if (!$roomFilter->getStartDate() && !$roomFilter->getEndDate()) {
             $roomsMapped = $roomService->getRoomMapped($rooms);
         } else {
             $roomsMapped = $roomService->getRoomMappedWithFilter($roomFilter, $rooms);
         }
 
         return $this->json(data: ['data' => $roomsMapped]);
+    }
+    /**
+     * Получение комнаты
+     *
+     * @OA\Parameter(
+     *     in="path",
+     *     name="room",
+     *     @OA\Schema(type="integer")
+     * )
+     *
+     * @OA\Response(
+     *     response="200",
+     *     description="success",
+     *     @OA\JsonContent(
+     *          @OA\Property(property="data", type="object",
+     *              ref=@Model(type="App\Entity\Room", groups={"get_room"})
+     *          )
+     *     )
+     * )
+     *
+     * @OA\Response(
+     *     response="404",
+     *     description="Not found",
+     *     @OA\JsonContent(ref="#/components/schemas/ApiException")
+     * )
+     *
+     */
+    #[Route('/{room}', name: 'get_api_room', methods: ["GET"])]
+    public function getRoom(Room $room): JsonResponse
+    {
+        return $this->json(['data' => $room], context: ['groups' => ['get_room']]);
     }
 }

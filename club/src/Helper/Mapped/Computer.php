@@ -6,7 +6,7 @@ class Computer
 {
     private int $id;
     private string $description;
-    private int $price;
+    private ?int $price;
     private int $status;
 
     /**
@@ -45,19 +45,12 @@ class Computer
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getPrice(): int
+    public function getPrice(): ?int
     {
         return $this->price;
     }
 
-    /**
-     * @param int $price
-     * @return Computer
-     */
-    public function setPrice(int $price): Computer
+    public function setPrice(?int $price): Computer
     {
         $this->price = $price;
         return $this;

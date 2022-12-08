@@ -30,12 +30,17 @@ class RoomService
     public function getRoomMappedWithFilter(RoomFilter $roomFilter, array $rooms): array
     {
         $roomsMapped = [];
-        $roomFilter->setDate(new \DateTime($roomFilter->getDate()));
-        if (!$roomFilter->getCountHours()) {
-            throw new ApiException(message: 'Нет часов для проверки расписания');
+        if (!$roomFilter->getStartDate()) {
+            throw new ApiException(message: 'Нет даты начала для проверки');
         }
+        $roomFilter->setStartDate(new \DateTime($roomFilter->getStartDate()));
+        if (!$roomFilter->getEndDate()) {
+            throw new ApiException(message: 'Нет даты конца для проверки');
+        }
+        $roomFilter->setEndDate(new \DateTime($roomFilter->getEndDate()));
+        $this->validateDateFilter($roomFilter->getStartDate(), $roomFilter->getEndDate());
         $schedules = $this->scheduleRepository->findBy([
-            'status' => ScheduleStatus::ACTIVE->value
+            'status' => [ScheduleStatus::ACTIVE->value, ScheduleStatus::WAIT_PAYMENT->value]
         ]);
         foreach ($rooms as $room) {
             $computers = [];
@@ -43,12 +48,8 @@ class RoomService
                 $status = ComputerStatus::ARCHIVE->value;
                 if ($this->scheduleService
                     ->checkTimeDateComputer(
-                        $roomFilter->getDate(),
-                        (clone $roomFilter->getDate())->modify($roomFilter->getCountHours() . ' hours'),
-                        $schedules,
-                        $computer
-                    )
-                ) {
+                        $roomFilter->getStartDate(), $roomFilter->getEndDate(), $schedules, $computer
+                    )) {
                     $status = ComputerStatus::ACTIVE->value;
                 }
                 $computers[] = (new ComputerMapped())
@@ -57,6 +58,9 @@ class RoomService
                     ->setPrice($computer->getType()?->getPrice())
                     ->setStatus($status);
             }
+            if (empty($computers)) {
+                continue;
+            }
             $roomsMapped[] = (new RoomMapped())
                 ->setPrice($room->getType()?->getPrice())
                 ->setId($room->getId())
@@ -64,6 +68,16 @@ class RoomService
                 ->setComputers($computers);
         }
         return $roomsMapped;
+    }
+
+    public function validateDateFilter(\DateTimeInterface $startDate, \DateTimeInterface $endDate)
+    {
+        if ($startDate <= new \DateTime()) {
+            throw new ApiException('Неверное время');
+        }
+        if ($startDate >= $endDate) {
+            throw new ApiException('Не валидное время');
+        }
     }
 
     /** @return RoomMapped[] */
@@ -78,6 +92,9 @@ class RoomService
                     ->setId($computer->getId())
                     ->setPrice($computer->getType()?->getPrice())
                     ->setStatus(ComputerStatus::ACTIVE->value);
+            }
+            if (empty($computers)) {
+                continue;
             }
             $roomsMapped[] = (new RoomMapped())
                 ->setId($room->getId())

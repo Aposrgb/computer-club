@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+    <title>Комната</title>
+    <style>
+    </style><link href="//vjs.zencdn.net/7.10.2/video-js.min.css" rel="stylesheet">
+    <script src="//vjs.zencdn.net/7.10.2/video.min.js"></script>
+{% endblock %}
+
+{% block body %}
+    <button><a style="font-size: 20px;color: black" href="/">Назад</a></button>
+    <div class="schedule-card" style="display: flex;flex-direction: column; align-items: center">
+        <h1 id="name_room" style="margin-top: 2vh"></h1>
+        <h3 id="description" style="margin-top: 2vh"></h3>
+        <h3 id="price" style="margin-top: 1vh"></h3>
+        <div style="margin-top: 5vh" id="files">
+
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let arr = document.URL.split('/')
+            arr = arr[arr.length - 1]
+            getRoom(arr)
+        })
+
+        async function getRoom(id) {
+            let data = await fetch('../api/room/' + id).then(data => data.json())
+            data = data['data']
+            document.getElementById('name_room').innerText = `Комната №${data.id}`
+            document.getElementById('description').innerText = `Описание: ${data.type.description}`
+            document.getElementById('price').innerText = `Цена: ${data.type.price}`
+            let html = ''
+            if (data.type.files.length > 0) {
+                for (let i = 0; i < data.type.files.length; i++) {
+                    let file = data.type.files[i]
+                    if (file.substring(file.length - 3) === 'mp4') {
+                        html += `
+                            <iframe  src="${file}" height="200" controls width="200">
+                            </iframe>
+
+                        `
+                    } else {
+                        html += `<img style="box-shadow: 0px 0px 16px black; margin: 3vh; border-radius: 20px;" height="200" width="200"  src="${file}"/>`
+                    }
+
+                }
+            } else {
+                html = '<h2>Материалы не найдены</h2>'
+            }
+            document.getElementById('files').innerHTML = html
+
+
+        }
+    </script>
+{% endblock %}

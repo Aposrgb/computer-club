@@ -8,37 +8,30 @@ use Symfony\Component\Validator\Constraints as Assert;
 class RoomFilter
 {
     #[Assert\Callback(callback: [ValidatorService::class, 'validateDate'], groups: ['filter'])]
-    private $date = null;
+    private $startDate = null;
 
-    #[Assert\Callback(callback: [ValidatorService::class, 'validateInteger'], groups: ['filter'])]
-    private string|null|int $countHours = null;
+    #[Assert\Callback(callback: [ValidatorService::class, 'validateDate'], groups: ['filter'])]
+    private $endDate = null;
 
-    public function getDate(): mixed
+    public function getStartDate(): mixed
     {
-        return $this->date;
+        return $this->startDate;
     }
 
-    public function setDate(mixed $date): RoomFilter
+    public function setStartDate($startDate): self
     {
-        $this->date = $date;
+        $this->startDate = $startDate;
         return $this;
     }
 
-    /**
-     * @return int|string|null
-     */
-    public function getCountHours(): int|string|null
+    public function getEndDate(): mixed
     {
-        return $this->countHours;
+        return $this->endDate;
     }
 
-    /**
-     * @param int|string|null $countHours
-     * @return RoomFilter
-     */
-    public function setCountHours(int|string|null $countHours): RoomFilter
+    public function setEndDate($endDate): self
     {
-        $this->countHours = $countHours;
+        $this->endDate = $endDate;
         return $this;
     }
 

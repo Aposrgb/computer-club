@@ -9,18 +9,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ScheduleDTO
 {
-    /** @OA\Property(type="integer") */
-    #[Assert\NotBlank(groups: ['create_schedule'])]
-    #[Assert\Type(type: 'integer', groups: ['create_schedule'])]
-    #[Assert\Range(min: 1, groups: ['create_schedule'])]
-    #[Groups(groups: ['create_schedule'])]
-    private $hours = null;
-
     /** @OA\Property(type="string") */
     #[Assert\NotBlank(groups: ['create_schedule'])]
     #[Assert\Callback(callback: [ValidatorService::class, 'validateDate'], groups: ['create_schedule'])]
     #[Groups(groups: ['create_schedule'])]
     private $dateStart = null;
+
+    /** @OA\Property(type="string") */
+    #[Assert\NotBlank(groups: ['create_schedule'])]
+    #[Assert\Callback(callback: [ValidatorService::class, 'validateDate'], groups: ['create_schedule'])]
+    #[Groups(groups: ['create_schedule'])]
+    private $dateEnd = null;
 
     /** @OA\Property(type="integer") */
     #[Assert\NotBlank(groups: ['create_schedule'])]
@@ -28,24 +27,6 @@ class ScheduleDTO
     #[Assert\Range(min: 1, groups: ['create_schedule'])]
     #[Groups(groups: ['create_schedule'])]
     private $computerId = null;
-
-    /**
-     * @return null
-     */
-    public function getHours()
-    {
-        return $this->hours;
-    }
-
-    /**
-     * @param null $hours
-     * @return ScheduleDTO
-     */
-    public function setHours($hours)
-    {
-        $this->hours = $hours;
-        return $this;
-    }
 
     /**
      * @return null
@@ -80,6 +61,24 @@ class ScheduleDTO
     public function setComputerId($computerId)
     {
         $this->computerId = $computerId;
+        return $this;
+    }
+
+    /**
+     * @return null
+     */
+    public function getDateEnd()
+    {
+        return $this->dateEnd;
+    }
+
+    /**
+     * @param null $dateEnd
+     * @return ScheduleDTO
+     */
+    public function setDateEnd($dateEnd)
+    {
+        $this->dateEnd = $dateEnd;
         return $this;
     }
 }

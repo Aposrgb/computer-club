@@ -24,7 +24,7 @@ class ScheduleMapper implements MapperInterface
         $entity = $entity ?? new Schedule();
         return $entity
             ->setDateStart($this->helperService->getActualValueDate($entity->getDateStart(), $dto->getDateStart()))
-            ->setHours($this->helperService->getActualValue($entity->getHours(), $dto->getHours()));
+            ->setDateEnd($this->helperService->getActualValueDate($entity->getDateEnd(), $dto->getDateEnd()));
     }
 
     public function entityToDTO($entity)

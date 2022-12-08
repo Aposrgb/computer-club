@@ -23,17 +23,19 @@ class ScheduleRepository extends ServiceEntityRepository
     }
 
     /** @return Schedule[] */
-    public function findScheduleByDay(\DateTimeInterface $day, int $computerId): array
+    public function findScheduleByDay(\DateTimeInterface $startDate, \DateTimeInterface $endDate, int $computerId): array
     {
         $qb = $this->createQueryBuilder('s');
         return $qb
             ->where('s.status = :active')
             ->orWhere('s.status = :wait')
+            ->andWhere('s.dateEnd >= :start')
             ->andWhere('s.dateStart <= :end')
             ->andWhere('s.computer = :computerId')
             ->setParameter('active', ScheduleStatus::ACTIVE->value)
             ->setParameter('wait', ScheduleStatus::WAIT_PAYMENT->value)
-            ->setParameter('end', $day)
+            ->setParameter('end', $endDate)
+            ->setParameter('start', $startDate)
             ->setParameter('computerId', $computerId)
             ->getQuery()
             ->getResult();

@@ -31,7 +31,7 @@
 }
 
 .schedule-card{
-    height: 70vh;
+    min-height: 70vh;
     background: #cad7ff;
     width: 80vw;
     border-radius: 5px;
@@ -51,12 +51,14 @@
 }
 
 .schedule-main {
-    height: 40vh;
+    min-height: 40vh;
     background: #8396d6;
-    width: 50vw;
+    width: 48vw;
     border-radius: 3px;
     margin: auto;
     margin-top: 2vh;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .approve-button{
@@ -129,4 +131,15 @@
 .computer{
     padding-top: 40px;
     margin-left: 50px;
+    width: max-content;
+    height: max-content;
+}
+
+.closer{
+    padding: 1.5vh;
+    width: fit-content;
+    border-radius: 1vh;
+}
+.closer:hover {
+    background: #2c2aa561;
 }

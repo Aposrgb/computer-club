@@ -29,6 +29,9 @@ class ComputerService
             if (!$room) {
                 throw new ApiException(message: 'Не найдена комната', status: Response::HTTP_NOT_FOUND);
             }
+            if (!$room->getType()) {
+                throw new ApiException(message: 'Нельзя добавить, у комнаты нет типа');
+            }
             $computer->setRoom($room);
         }
         if ($computerDTO->getTypeId()) {
@@ -36,7 +39,7 @@ class ComputerService
             if (!$entityType) {
                 throw new ApiException(message: 'Не найден тип', status: Response::HTTP_NOT_FOUND);
             }
-            if($entityType->getType() != EntityType::COMPUTER->value){
+            if ($entityType->getType() != EntityType::COMPUTER->value) {
                 throw new ApiException(message: 'Неверный тип');
             }
             $computer->setType($entityType);

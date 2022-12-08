@@ -98,16 +98,24 @@ function validate(value, length) {
     return false
 }
 
-function throwWindowError(msg) {
+function throwWindow(msg, bgColor){
     let el = document.createElement('p')
     el.innerText = msg
-    el.style = 'background: #ff0000ab; color: white; max-width: 200px; padding: 2vh 1vw; margin: 1vh; border-radius: 0.2vh;'
-    let error = document.getElementById('error')
+    el.style = `background: ${bgColor}; color: white; max-width: 200px; padding: 2vh 1vw; margin: 1vh; border-radius: 0.2vh;`
+    let error = document.getElementById('window')
     error.append(el)
     setTimeout(() => {
-        error.removeChild(error.lastChild)
+        error.removeChild(error.firstChild)
     }, 4000)
     return true
+}
+
+function throwWindowError(msg) {
+    return throwWindow(msg, '#ff0000ab')
+}
+
+function throwWindowSuccess(msg) {
+    return throwWindow(msg, '#00ff7e78')
 }
 
 function saveToken(token) {
@@ -224,4 +232,16 @@ function switchRegister() {
         return true
     }
     return false
+}
+
+function newDatePicker(id, func = () => 0 , format = "Y-m-d H:i"){
+    document.getElementById(id).attributes.removeNamedItem('disabled')
+    flatpickr("#"+id, {
+        time_24hr: true,
+        enableTime: true,
+        dateFormat: format,
+        onClose: function(selectedDates, dateStr, instance) {
+            func(dateStr)
+        },
+    })
 }
