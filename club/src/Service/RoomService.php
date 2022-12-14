@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Computer;
 use App\Entity\Room;
 use App\Helper\DTO\RoomDTO;
 use App\Helper\EnumStatus\ComputerStatus;
@@ -44,6 +45,7 @@ class RoomService
         ]);
         foreach ($rooms as $room) {
             $computers = [];
+            /** @var Computer $computer */
             foreach ($room->getComputers() as $computer) {
                 $status = ComputerStatus::ARCHIVE->value;
                 if ($this->scheduleService
@@ -55,7 +57,8 @@ class RoomService
                 $computers[] = (new ComputerMapped())
                     ->setDescription($computer->getType()?->getDescription())
                     ->setId($computer->getId())
-                    ->setPrice($computer->getType()?->getPrice())
+                    ->setFiles($computer->getType()?->getFiles() ?? [])
+                    ->setPrice($computer->getPrice())
                     ->setStatus($status);
             }
             if (empty($computers)) {
@@ -86,11 +89,13 @@ class RoomService
         $roomsMapped = [];
         foreach ($rooms as $room) {
             $computers = [];
+            /** @var Computer $computer */
             foreach ($room->getComputers() as $computer) {
                 $computers[] = (new ComputerMapped())
                     ->setDescription($computer->getType()?->getDescription())
                     ->setId($computer->getId())
-                    ->setPrice($computer->getType()?->getPrice())
+                    ->setPrice($computer->getPrice())
+                    ->setFiles($computer->getType()?->getFiles() ?? [])
                     ->setStatus(ComputerStatus::ACTIVE->value);
             }
             if (empty($computers)) {

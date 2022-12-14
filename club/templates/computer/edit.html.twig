@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Computer{% endblock %}
+
+{% block body %}
+    <h1>Edit Computer</h1>
+
+    {{ include('computer/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_computer_index') }}">back to list</a>
+
+    {{ include('computer/_delete_form.html.twig') }}
+{% endblock %}

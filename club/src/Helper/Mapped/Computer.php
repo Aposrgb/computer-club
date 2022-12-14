@@ -8,6 +8,8 @@ class Computer
     private string $description;
     private ?int $price;
     private int $status;
+    /** @var String[] */
+    private array $files;
 
     /**
      * @return int
@@ -71,6 +73,24 @@ class Computer
     public function setStatus(int $status): Computer
     {
         $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFiles(): array
+    {
+        return $this->files;
+    }
+
+    /**
+     * @param array $files
+     * @return Computer
+     */
+    public function setFiles(array $files): Computer
+    {
+        $this->files = $files;
         return $this;
     }
 

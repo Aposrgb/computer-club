@@ -1,7 +1,6 @@
 let isAuth = false
 const ACTION_EXIT = 'exit'
 
-
 document.addEventListener('DOMContentLoaded', () => {
     checkApiKey()
 })
@@ -105,7 +104,7 @@ function throwWindow(msg, bgColor){
     let error = document.getElementById('window')
     error.append(el)
     setTimeout(() => {
-        error.removeChild(error.firstChild)
+        error.removeChild(error.firstElementChild)
     }, 4000)
     return true
 }
@@ -133,6 +132,7 @@ function clearToken() {
     document.getElementById('name_user').innerHTML = ''
     document.getElementById('name_user').removeEventListener('click', tabProfile())
     document.getElementById('div_list').style.display = 'none'
+    window.location.reload()
 }
 
 function checkApiKey() {
@@ -162,6 +162,7 @@ async function successAuth() {
 function checkAuthorization() {
     if (checkCredentinals()) {
         isAuth = true
+        document.getElementById('purchases').style.display = 'block'
         document.getElementById('button_auth').style.display = 'none'
         document.getElementById('name_user').innerText = localStorage.getItem('nameUser') + " " + localStorage.getItem('surnameUser')
         return true

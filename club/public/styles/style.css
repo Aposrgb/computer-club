@@ -16,7 +16,7 @@
 
 .background{
     background: black;
-    height: 100vh;
+    min-height: 100vh;
     display:flex;
     align-items: center;
     flex-direction: column;
@@ -64,7 +64,7 @@
 .approve-button{
     background: lawngreen;
     outline: unset;
-    border-radius: 2px;
+    border-radius: 10px;
     padding: 5px;
     border: unset;
     font-size: 18px;
@@ -128,8 +128,9 @@
     margin-left: 40px;
     margin-right: 40px;
 }
+
 .computer{
-    padding-top: 40px;
+    padding-top: 20px;
     margin-left: 50px;
     width: max-content;
     height: max-content;
@@ -140,6 +141,22 @@
     width: fit-content;
     border-radius: 1vh;
 }
+
 .closer:hover {
     background: #2c2aa561;
 }
+
+.purchase{
+    flex-direction: column;
+    background: #82cbff94;
+    box-shadow: inset 0px 0px 8px 2px #00000085;
+    border-radius: 10px;
+    width: fit-content;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.purchase div{
+    margin: 3px;
+}
+a { color: #004a94;}

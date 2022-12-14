@@ -140,8 +140,12 @@ class ScheduleApiController extends AbstractController
             ->setComputer(
                 $computerService->getComputerById($scheduleDTO->getComputerId())
             );
+        $schedule->setPrice($schedule->getComputer()->getPrice());
         if ($schedule->getDateStart() < new \DateTime()) {
             throw new ApiException(message: 'Нельзя забронировать');
+        }
+        if($schedule->getDateStart()->diff($schedule->getDateEnd())->days > 0){
+            throw new ApiException(message: 'Нельзя забронировать больше чем на 24 часа');
         }
         $scheduleService->checkTimeSchedule(
             date: $schedule->getDateStart(),
@@ -149,6 +153,7 @@ class ScheduleApiController extends AbstractController
             computerId: $schedule->getComputer()->getId()
         );
         $scheduleService->checkTimeSchedulesUser($user->getSchedules()->toArray(), $schedule);
+        $schedule = $scheduleService->setFullPriceToSchedule($schedule);
         $scheduleRepository->add($schedule, true);
         return $this->json(
             data: ['data' => $schedule],

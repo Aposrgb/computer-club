@@ -2,15 +2,17 @@ controller:
     resource: '../src/Controller'
     type:     annotation
     trailing_slash_on_root: false
-
+admin:
+    resource: '../src/Controller/Admin'
+    prefix:   /admin
+    type:     annotation
+    trailing_slash_on_root: false
 api:
     resource: '../src/Controller/Api'
     type:     annotation
     prefix:   /api
     trailing_slash_on_root: false
-
 app.swagger_ui:
     path: /{area}/doc
     methods: GET
     defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
-

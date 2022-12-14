@@ -109,4 +109,10 @@ class Computer
 
         return $this;
     }
+
+    #[Groups(['get_room'])]
+    public function getPrice(): ?int
+    {
+        return $this->type?->getPrice() + $this?->getRoom()?->getType()?->getPrice()??0;
+    }
 }

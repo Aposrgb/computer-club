@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_index.html.twig' %}
 
 {% block head %}
     <title>Расписание</title>
@@ -51,9 +51,6 @@
             <div class="filter-div">
                 <label class="label-input" for="date_end_filter">Дата конца</label>
                 <input disabled class="input" id="date_end_filter" type="text"/>
-            </div>
-            <div class="filter-div">
-                <button style="float: right;" class="approve-button" onclick="getRoom()">Применить</button>
             </div>
         </div>
     </div>

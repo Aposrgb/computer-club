@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+<div>
+    {% if schedule.computer %}
+        <label>Current computer: №{{ schedule.computer.id }}</label>
+    {% endif %}
+</div>
+<div>
+    {% if  schedule.owner %}
+        <label>Current owner: {{ schedule.owner.surname }} {{ schedule.owner.name }}</label>
+    {% endif %}
+</div>
+    <button class="btn">{{ button_label|default('Save') }}</button>
+
+{{ form_end(form) }}

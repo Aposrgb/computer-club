@@ -2,14 +2,18 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\User;
 use App\Helper\EnumStatus\ScheduleStatus;
 use App\Helper\EnumType\PurchaseType;
 use App\Helper\Exception\ApiException;
 use App\Service\ScheduleService;
 use App\Service\ValidatorService;
+use Doctrine\Common\Collections\Criteria;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -28,13 +32,8 @@ class PurchaseApiController extends AbstractController
      * Оплата заказа
      *
      * @OA\Response(
-     *     response="200",
-     *     description="Success",
-     *     @OA\JsonContent(
-     *          @OA\Property(property="data", type="object",
-     *              @OA\Property(property="link", type="string")
-     *          )
-     *     )
+     *     response="204",
+     *     description="Success"
      * )
      *
      * @OA\Parameter(
@@ -66,7 +65,7 @@ class PurchaseApiController extends AbstractController
      * )
      *
      */
-    #[Route('/type/{type}/order/{entityId}', name: 'purchase', methods: ["GET"])]
+    #[Route('/type/{type}/order/{entityId}', name: 'purchase', methods: ["POST"])]
     public function purchase(
         int|string       $type,
         int|string       $entityId,
@@ -78,9 +77,8 @@ class PurchaseApiController extends AbstractController
         if (!in_array($type, PurchaseType::getTypes())) {
             throw new ApiException(message: 'Неверный тип');
         }
-        $schedule = null;
         if ($type == PurchaseType::SCHEDULE->value) {
-            $schedule = $scheduleService->getScheduleByStatusAndUser(
+            $scheduleService->paySchedule(
                 $entityId,
                 ScheduleStatus::WAIT_PAYMENT->value,
                 $this->getUser()
@@ -88,11 +86,32 @@ class PurchaseApiController extends AbstractController
         }
 
         return $this->json(
-            data: ['data' => [
-                'price' => $schedule?->getPrice(),
-                'dateStart' => $schedule?->getDateStart(),
-                'computer' => $schedule?->getComputer()
-            ]]
+            data: [],
+            status: Response::HTTP_NO_CONTENT
         );
+    }
+
+    /**
+     * Получение заказов пользователя
+     *
+     * @OA\Response(
+     *     response="200",
+     *     description="Success",
+     *     @OA\JsonContent(
+     *          @OA\Property(property="data", type="array",
+     *              @OA\Items(ref=@Model(type="App\Entity\Schedule", groups={"get_schedule"}))
+     *          )
+     *     )
+     * )
+     *
+     */
+    #[Route('', name: 'get_user_purchases', methods: ['GET'])]
+    public function getPurchases(): JsonResponse
+    {
+        $schedules =$this->getUser()->getSchedules();
+        $sort = Criteria::create()->orderBy(['createdAt' => 'DESC']);
+        return $this->json(data: [
+            'data' => $schedules->matching($sort)
+        ], context: ['groups' => ['get_schedule']]);
     }
 }

@@ -13,9 +13,16 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        admin:
+            lazy: true
+            pattern: ^/admin
+            custom_authenticator: App\Security\LoginAuthenticator
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
         api:
             pattern: ^/api
-            provider: app_user_provider
             custom_authenticator: App\Security\ApiAuthenticator
         main:
             lazy: true
@@ -37,6 +44,8 @@ security:
          - { path: ^/api/schedule/week, roles: PUBLIC_ACCESS }
          - { path: ^/api/room, roles: PUBLIC_ACCESS }
          - { path: ^/api/*, roles: ROLE_USER }
+         - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+         - { path: ^/admin/*, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

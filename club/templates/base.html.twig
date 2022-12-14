@@ -1,72 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <script src="/scripts/base.js"></script>
-    <link rel="stylesheet" href="/styles/style.css" />
-    {% block head %}
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.svg"/>
+    <!-- Bootstrap icons-->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
     {% endblock %}
 </head>
+
+
 <body>
-<div style="position: fixed; z-index: 100" id="window">
-
-</div>
-<div id="auth" style="position: fixed; display: none">
-    <div style="left: 50%;transform: translate(-50%);position: absolute;width: 50vw;height: 85vh;background: #83a5ff;margin: 5vh auto auto;border-radius: 1vh;display: flex;flex-direction: column">
-        <div id="authWindow" class="input-div" >
-            <div class="input-div">
-                <label class="label-input" for="login">Логин</label>
-                <input class="input" id="login" type="email"/>
-            </div>
-            <div class="input-div">
-                <label class="label-input" for="password">Пароль</label>
-                <input class="input" id="password" type="password"/>
-            </div>
-        </div>
-        <div id="registerWindow" class="input-div" style="display: none;">
-            <div class="input-div">
-                <label class="label-input" for="loginReg">Логин</label>
-                <input class="input" id="loginReg" type="email"/>
-            </div>
-            <div class="input-div">
-                <label class="label-input" for="passwordReg">Пароль</label>
-                <input class="input" id="passwordReg" type="password"/>
-            </div>
-            <div class="input-div">
-                <label class="label-input" for="name">Имя</label>
-                <input class="input" id="name" type="text"/>
-            </div>
-            <div class="input-div">
-                <label class="label-input" for="surname">Фамилия</label>
-                <input class="input" id="surname" type="text"/>
-            </div>
-            <div class="input-div">
-                <label class="label-input" for="passwordReg">Телефон</label>
-                <input class="input" id="phone" type="tel"/>
-            </div>
-        </div>
-        <div class="input-div">
-            <button style="float: right;margin-top: 3vh" class="approve-button" onclick="auth()">Вход</button>
-            <button style="float: right;margin-top: 3vh" class="approve-button" onclick="register()">Регистрация</button>
-        </div>
+<!-- Navigation-->
+{% if app.user %}
+    <div class="mb-3">
+        You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
     </div>
-    <div onclick="closeAuth(this)" class="auth" style="width: 100vw; height: 100vh; background: #00000096;" ></div>
-</div>
-<div class="background">
-    <div class="head" style="display: flex; flex-direction: row">
-        <h1 class="header-text">Поиск свободных компьютеров</h1>
-        <div id="name_user" class="header-text" onclick="tabProfile()"></div>
-        <div style="display: none" id="div_list" class="div_list">
-            <ul  class="list_button">
-                <li id="exit" onclick="action(this)">Выйти</li>
-            </ul>
-        </div>
-        <button id="button_auth" class="auth_button" onclick="closeAuth()"> Вход </button>
-    </div>
+{% endif %}
+{% if app.user %}
+    {% block nav %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+            <div class="container px-4 px-lg-5">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
 
+                        <li onclick="openTab(this)" class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle  text-white" id="navbarDropdown" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">Расписание</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ path('app_schedule_index') }}">Список</a></li>
+                            </ul>
+                        </li>
+
+                        <li onclick="openTab(this)" class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle  text-white" id="navbarDropdown" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">Компьютер</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ path('app_computer_index') }}">Список</a></li>
+                            </ul>
+                        </li>
+
+                        <li onclick="openTab(this)" class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle  text-white" id="navbarDropdown" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">Типы</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ path('app_entity_type_index') }}">Список</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    {% endblock %}
+{% endif %}
+
+<!-- Section-->
 {% block body %}
 {% endblock %}
 
-</div>
+{% block section %}{% endblock %}
+<script>
+    function openTab(el) {
+        let display = el.children[el.children.length - 1].style.display
+        el.children[el.children.length - 1].style.display = display === "block" ? "" : "block"
+    }
+</script>
 </body>
 </html>

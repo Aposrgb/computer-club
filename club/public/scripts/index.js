@@ -1,9 +1,19 @@
-let rooms = [], computer_img = '/icons/computer_icon.png', selectRoom, selectComputer = null
-const ACTIVE = 1, ARCHIVE = 10
+let rooms = [], computer_img = '/icons/computer_icon.png', selectRoom = null, selectComputer = null
+const ACTIVE = 1, NOT_SELECT = 3, ARCHIVE = 10
 document.addEventListener('DOMContentLoaded', async () => {
     getRoom()
-    newDatePicker('date_start_filter')
-    newDatePicker('date_end_filter')
+    newDatePicker('date_start_filter', (str) => {
+        let endDate = document.getElementById('date_end_filter').value
+        if (endDate) {
+            getRoom()
+        }
+    })
+    newDatePicker('date_end_filter', (str) => {
+        let startDate = document.getElementById('date_start_filter').value
+        if(startDate){
+            getRoom()
+        }
+    })
     newDatePicker('date_start')
     newDatePicker('date_end')
 })
@@ -27,14 +37,12 @@ async function getRoom() {
     }
     data = data['data']
     rooms = []
-    console.log(data)
     let room, computer
     try {
         for (let i = 0; i < data.length; i++) {
             room = new Room()
             room.id = data[i]['id']
             room.description = data[i]['description']
-            room.price = data[i]['price']
             room.computers = []
             for (let j = 0; j < data[i]['computers'].length; j++) {
                 computer = new Computer()
@@ -45,11 +53,15 @@ async function getRoom() {
                 room.computers[j] = computer
             }
             rooms[i] = room
-            selectRoom = 0
-            loadRooms()
         }
+        if(selectRoom === null){
+            selectRoom = 0
+        }
+        loadRooms()
+        document.getElementById('computer_description').innerHTML = ''
     } catch (error) {
         throwWindowError('Внезапная ошибка')
+        console.log(error)
     }
     SlickLoader.disable();
 }
@@ -60,7 +72,7 @@ function loadRooms() {
     for (let i = 0; i < rooms[selectRoom].computers.length; i++) {
         main.innerHTML +=
             `<div onclick="getComputer(this)" computer-id="${rooms[selectRoom].computers[i].id}" class="computer">
-                <img src="${computer_img}" width="90" height="90" />
+                <img src="${computer_img}" width="70" height="70" />
                 <h2>Компик ${rooms[selectRoom].computers[i].id}</h2>
             </div>`
     }
@@ -116,19 +128,23 @@ function getComputer(el) {
         document.getElementById('bron').style.display = 'none'
         return;
     }
-    let color = computer.status === ACTIVE ? 'green' : 'grey'
+    let text, color
+    if(computer.status === ACTIVE){
+        document.getElementById('bron').style.display = 'block'
+        text = 'Не занято'
+        color = 'green'
+    } else {
+        text = 'Занято'
+        color = 'grey'
+    }
     document.getElementById('computer_description').innerHTML =
         `<div>
-            <p>Компик №${computer.id}</p>
-            <p>Цена: ${computer.price}</p>
-            <p>Описание: ${computer.description}</p>
-            <p>Статус: <span style="color: ${color}"> ${computer.status === ACTIVE ? 'Не занято' : 'Занято'}</span></p>
+            <a href="/computer/${computer.id}">Компик №${computer.id}  (${computer.price} руб/час)</a>
+            <p>${computer.description}</p>
+            <p><span style="color: ${color}"> ${text}</span></p>
         </div>`
     selectComputer = computer
     selectComputer.current = true
-    if (computer.status === ACTIVE) {
-        document.getElementById('bron').style.display = 'block'
-    }
 }
 
 function closeBron() {
@@ -138,6 +154,14 @@ function closeBron() {
 function bron() {
     if (checkAuthorization()) {
         document.getElementById('input_bron').style.display = 'block'
+        let startDate = document.getElementById('date_start_filter').value
+        let endDate = document.getElementById('date_end_filter').value
+        if (startDate) {
+            document.getElementById('date_start').value = document.getElementById('date_start_filter').value
+        }
+        if (endDate) {
+            document.getElementById('date_end').value = document.getElementById('date_end_filter').value
+        }
         return
     }
     closeAuth()
@@ -164,6 +188,7 @@ async function sendBron() {
             return
         }
         throwWindowSuccess('Успешно')
+        loadRooms()
     } else {
         throwWindowError('Вы не авторизованы')
         clearToken()
@@ -173,7 +198,6 @@ async function sendBron() {
 class Room {
     id
     computers = []
-    price
     description
 }
 
@@ -182,5 +206,6 @@ class Computer {
     price
     description
     status
+    files = []
     current = false
 }

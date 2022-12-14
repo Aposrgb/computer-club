@@ -8,14 +8,25 @@ use App\Entity\User;
 use App\Helper\EnumStatus\ScheduleStatus;
 use App\Helper\Exception\ApiException;
 use App\Repository\ScheduleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleService
 {
     public function __construct(
-        protected ScheduleRepository $scheduleRepository
+        protected ScheduleRepository $scheduleRepository,
+        protected EntityManagerInterface $entityManager,
     )
     {
+    }
+
+    public function setFullPriceToSchedule(Schedule $schedule): Schedule
+    {
+        $interval = $schedule->getDateStart()->diff($schedule->getDateEnd());
+        $hours = $interval->h > 0 ? $interval->h : 1;
+        $minutes = $interval->i;
+        $price = (int)($schedule->getPrice() * $hours + $schedule->getPrice() *  $minutes/60);
+        return $schedule->setPrice($price);
     }
 
     /** @param Schedule[] $schedules */
@@ -30,7 +41,7 @@ class ScheduleService
         $this->checkTimeSchedules($newDateStart, $newEndStart, $schedules);
     }
 
-    public function getScheduleByStatusAndUser(int $id, ?int $status, ?User $user): Schedule
+    public function paySchedule(int $id, ?int $status, ?User $user): void
     {
         $query = ['id' => $id];
         if ($status) {
@@ -46,7 +57,8 @@ class ScheduleService
                 status: Response::HTTP_NOT_FOUND
             );
         }
-        return $schedule;
+        $schedule->setStatus(ScheduleStatus::ACTIVE->value);
+        $this->entityManager->flush();
     }
 
     public function checkTimeSchedule(\DateTimeInterface $date, \DateTimeInterface $endDay, int $computerId): void

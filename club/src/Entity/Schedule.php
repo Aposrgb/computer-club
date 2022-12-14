@@ -38,7 +38,12 @@ class Schedule
     private ?int $status;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(groups: ['get_schedule'])]
     private ?\DateTimeInterface $dateEnd = null;
+
+    #[ORM\Column]
+    #[Groups(groups: ['get_schedule'])]
+    private ?int $price = null;
 
     public function __construct()
     {
@@ -109,13 +114,6 @@ class Schedule
         return $this;
     }
 
-    public function getPrice(): int
-    {
-        $price = $this->computer->getType()->getPrice();
-        $price += $this->computer->getRoom()->getType()->getPrice();
-        return $price;
-    }
-
     public function getDateEnd(): ?\DateTimeInterface
     {
         return $this->dateEnd;
@@ -127,4 +125,17 @@ class Schedule
 
         return $this;
     }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
 }

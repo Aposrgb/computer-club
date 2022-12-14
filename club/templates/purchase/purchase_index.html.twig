@@ -1,0 +1,146 @@
+{% extends 'base_index.html.twig' %}
+
+{% block head %}
+    <title>Мои заказы</title>
+{% endblock %}
+
+{% block body %}
+    <button><a style="font-size: 20px;color: black" href="/">Назад</a></button>
+    <div class="schedule-card">
+        <p class="arrows">Покупки</p>
+        <div id="user_purchases"></div>
+
+    </div>
+    <script>
+        let purchases = []
+        const monthNames = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Ноября', 'Декабря']
+        const WAIT_PAYMENT = 0, ACTIVE = 1, ARCHIVE = 2, CANCELLED = 3
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkCredentinals()) {
+                window.location.href = "{{ path('index') }}"
+            }
+            loadPurchase()
+        })
+
+        async function loadPurchase() {
+            let apiKey = localStorage.getItem('apiKey')
+            let data = await fetch('{{ path('get_user_purchases') }}', {
+                method: 'GET',
+                headers: {
+                    apiKey: apiKey
+                }
+            }).then(data => data.json())
+            data = data['data']
+            purchases = []
+            for (let item of data) {
+                let purchase = new Purchase()
+                purchase.id = item.id
+                purchase.createdAt = dateFormat(new Date(item.createdAt))
+                purchase.dateEnd = dateFormat(new Date(item.dateEnd))
+                purchase.dateStart = dateFormat(new Date(item.dateStart))
+                purchase.status = item.status
+                purchase.computerId = item.computer.id
+                purchase.roomId = item.computer.room.id
+                purchase.price = item.price
+                purchases.push(purchase)
+            }
+            renderPurchase()
+        }
+
+        function renderPurchase() {
+            let html = '<div id="user_purchases"></div>'
+            for (let purchase of purchases) {
+
+                html += `
+                <div class="arrows purchase" >
+                    <h2 style="margin: 10px;font-weight: normal">Заказ №${purchase.id}</h2>
+                    <div>
+                        <div>Дата создания <span style="color: #143e5c;text-decoration: underline">${purchase.createdAt}</span></div>
+                    </div>
+                    <div style="display: flex">
+                        <div>С  <span style="color: #143e5c;text-decoration: underline">${purchase.dateStart}</span></div>
+                        <div>по <span style="color: #143e5c;text-decoration: underline">${purchase.dateEnd}</span></div>
+                    </div>
+                    <div style="display: flex">
+                        <a href="/computer/${purchase.computerId}" style="color: #143e5c;text-decoration: underline"> Компьютер №${purchase.computerId} </a>
+                    </div>
+                    <div>
+                        <a href="/room/${purchase.roomId}" style="color: #143e5c;text-decoration: underline"> Комната №${purchase.roomId}</a>
+                    </div>
+                    <div style="display: flex">
+                        <div style="color: ${getColor(purchase.status)}">${getText(purchase.status)}</div>
+                        <div style="color: #143e5c;text-decoration: underline">Итого ${purchase.price} рублей</div>
+                    </div>
+                    <div style="${purchase.status === WAIT_PAYMENT ? 'width: fit-content; margin: 10px;' :'display:none' }" onclick="payPurchase(${purchase.id})" class="approve-button">
+                        Оплатить
+                    </div>
+                </div>
+                `
+            }
+            document.querySelector('#user_purchases').outerHTML = html
+        }
+
+        async function payPurchase(id){
+            let apiKey = localStorage.getItem('apiKey')
+            let data = await fetch('/api/purchase/type/1/order/' + id, {
+                method: 'POST',
+                headers: {
+                    apiKey: apiKey
+                }
+            })
+            if (data.status === 204){
+                throwWindowSuccess('Оплачено')
+                window.location.reload()
+            } else {
+                throwWindowError('Внезапная ошибка')
+            }
+        }
+
+        function dateFormat(date){
+            return date.getUTCDate() +
+                ' ' +
+                monthNames[date.getUTCMonth() - 1] +
+                " " +
+                date.getUTCFullYear() +
+                " " +
+                (date.getUTCHours() === 0 ? '00': date.getUTCHours()) +
+                ":" +
+                (date.getUTCMinutes() === 0 ? '00': date.getUTCMinutes())
+        }
+
+        function getColor(status) {
+            if(status === WAIT_PAYMENT){
+                return 'black';
+            } else if(status === ACTIVE){
+                return 'forestgreen';
+            } else if(status === ARCHIVE) {
+                return 'grey';
+            } else if(status === CANCELLED) {
+                return 'grey';
+            }
+        }
+
+        function getText(status) {
+            if(status === WAIT_PAYMENT){
+                return 'Ожидает оплаты';
+            } else if(status === ACTIVE){
+                return 'Активно';
+            } else if(status === ARCHIVE) {
+                return 'В архиве';
+            } else if(status === CANCELLED) {
+                return 'Отменено';
+            }
+        }
+
+        class Purchase {
+            id
+            status
+            dateStart
+            dateEnd
+            createdAt
+            computerId
+            roomId
+            price
+        }
+    </script>
+{% endblock %}

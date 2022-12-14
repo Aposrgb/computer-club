@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Schedule index{% endblock %}
+
+{% block body %}
+    <h1>Schedule index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>DateStart</th>
+                <th>CreatedAt</th>
+                <th>Status</th>
+                <th>DateEnd</th>
+                <th>Price</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for schedule in schedules %}
+            <tr>
+                <td>{{ schedule.id }}</td>
+                <td>{{ schedule.dateStart ? schedule.dateStart|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ schedule.createdAt ? schedule.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    {{ schedule.status }} (
+                    {% if schedule.status == 0 %}
+                        Ожидание оплаты
+                    {% elseif schedule.status == 1 %}
+                        Активный
+                    {% elseif schedule.status == 2 %}
+                        В архиве
+                    {% elseif schedule.status == 3 %}
+                        Отменен
+                    {% endif  %}
+                    )
+                </td>
+                <td>{{ schedule.dateEnd ? schedule.dateEnd|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ schedule.price }}</td>
+                <td>
+                    <a href="{{ path('app_schedule_show', {'id': schedule.id}) }}">show</a>
+                    <a href="{{ path('app_schedule_edit', {'id': schedule.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

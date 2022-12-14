@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EntityType index{% endblock %}
+
+{% block body %}
+    <h1>EntityType index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Files</th>
+                <th>Type</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity_type in entity_types %}
+            <tr>
+                <td>{{ entity_type.id }}</td>
+                <td>{{ entity_type.price }}</td>
+                <td>{{ entity_type.description }}</td>
+                <td>{{ entity_type.files|join(',   ') }}</td>
+                <td>{{ entity_type.type }}</td>
+                <td>
+                    <a href="{{ path('app_entity_type_show', {'id': entity_type.id}) }}">show</a>
+                    <a href="{{ path('app_entity_type_edit', {'id': entity_type.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_entity_type_new') }}">Create new</a>
+{% endblock %}

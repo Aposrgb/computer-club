@@ -1,0 +1,14 @@
+{{ form_start(form) }}
+    {{ form_row(form.price) }}
+    {{ form_row(form.description) }}
+    {{ form_label(form.file) }}
+<ul class="file">
+    {% for file in form.file %}
+        {{ form_row(file) }}
+    {% endfor %}
+</ul>
+<div hidden>
+    {{ form_rest(form) }}
+</div>
+<button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

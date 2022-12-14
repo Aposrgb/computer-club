@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Computer{% endblock %}
+
+{% block body %}
+    <h1>Create new Computer</h1>
+
+    {{ include('computer/_form.html.twig') }}
+
+    <a href="{{ path('app_computer_index') }}">back to list</a>
+{% endblock %}
