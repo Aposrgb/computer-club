@@ -37,7 +37,7 @@ class Schedule
     #[Groups(groups: ['get_schedule'])]
     private ?int $status;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(groups: ['get_schedule'])]
     private ?\DateTimeInterface $dateEnd = null;
 

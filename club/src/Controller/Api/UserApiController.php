@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Repository\UserRepository;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -43,5 +44,27 @@ class UserApiController extends AbstractController
         return $this->json(data: [
             'data' => $this->getUser()
         ], context: ['groups' => ['get_user']]);
+    }
+
+    /**
+     * Получение профилей
+     *
+     * @OA\Response(
+     *     response="200",
+     *     description="OK",
+     *     @OA\JsonContent(
+     *          @OA\Property(property="data", type="array",
+     *              @OA\Items(ref=@Model(type="App\Entity\User", groups={"get_user"}))
+     *          )
+     *     )
+     * )
+     */
+    #[Route('/all', name: 'get_users', methods: ['GET'])]
+    public function getUsers(UserRepository $userRepository): JsonResponse
+    {
+        return $this->json(
+            data: ['data' => $userRepository->findAll()],
+            context: ['groups' => ['get_user']]
+        );
     }
 }

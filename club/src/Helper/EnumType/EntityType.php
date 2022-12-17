@@ -14,4 +14,12 @@ enum EntityType: int
             ''.self::ROOM->value
         ];
     }
+
+    public static function getTypesForForm():array
+    {
+        return [
+            'Компьютер' => self::COMPUTER->value,
+            'Комната' => self::ROOM->value
+        ];
+    }
 }

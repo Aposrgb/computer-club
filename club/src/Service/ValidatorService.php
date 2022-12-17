@@ -53,6 +53,17 @@ class ValidatorService
         }
     }
 
+    /** @param UploadedFile[] $files */
+    public function validateImagesExtensionBool(array $files, array $extensions): bool
+    {
+        try {
+            self::validateImagesExtension($files, $extensions);
+            return true;
+        } catch (\Exception $exception){
+            return false;
+        }
+    }
+
 
     public static function validateDate($object, ExecutionContextInterface $context): void
     {

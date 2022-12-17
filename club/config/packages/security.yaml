@@ -42,6 +42,7 @@ security:
          - { path: ^/api/security/registration, roles: PUBLIC_ACCESS }
          - { path: ^/api/security/auth, roles: PUBLIC_ACCESS }
          - { path: ^/api/schedule/week, roles: PUBLIC_ACCESS }
+         - { path: ^/api/computer/*, roles: PUBLIC_ACCESS }
          - { path: ^/api/room, roles: PUBLIC_ACCESS }
          - { path: ^/api/*, roles: ROLE_USER }
          - { path: ^/admin/login, roles: PUBLIC_ACCESS }

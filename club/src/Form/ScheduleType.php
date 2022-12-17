@@ -21,6 +21,8 @@ class ScheduleType extends AbstractType
             ])
             ->add('dateEnd')
             ->add('price')
+            ->add('user', null, ['mapped' => false])
+            ->add('pc', null, ['mapped' => false])
         ;
     }
 

@@ -1,12 +1,31 @@
 {{ form_start(form) }}
+{% if error is defined %}
+    <h4 style="color: red">{{ error }}</h4>
+{% endif %}
     {{ form_row(form.price) }}
     {{ form_row(form.description) }}
-    {{ form_label(form.file) }}
-<ul class="file">
-    {% for file in form.file %}
-        {{ form_row(file) }}
-    {% endfor %}
-</ul>
+    {{ form_row(form.type) }}
+<div>
+
+    <label for="entity_type_file_1">File 1</label>
+    <input type="file" id="entity_type_file_1" name="entity_type[file][1]" />
+</div>
+<div>
+    <label for="entity_type_file_2">File 2</label>
+    <input type="file"  id="entity_type_file_2" name="entity_type[file][2]" />
+</div>
+<div>
+    <label for="entity_type_file_3">File 3</label>
+    <input type="file"  id="entity_type_file_3" name="entity_type[file][3]" />
+</div>
+<div>
+    <label for="entity_type_file_4">File 4</label>
+    <input type="file"  id="entity_type_file_4" name="entity_type[file][4]" />
+</div>
+<div>
+    <label for="entity_type_file_5">File 5</label>
+    <input type="file"  id="entity_type_file_5" name="entity_type[file][5]" />
+</div>
 <div hidden>
     {{ form_rest(form) }}
 </div>

@@ -1,5 +1,22 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+{% if error is defined %}
+    <h4 style="color: red">{{ error }}</h4>
+{% endif %}
+    {{ form_row(form.dateStart) }}
+    {{ form_row(form.dateEnd) }}
+    {{ form_row(form.createdAt) }}
+    {{ form_row(form.status) }}
+    {{ form_row(form.price) }}
+<div>
+    <label for="schedule_user">User</label>
+    <select id="schedule_user" {% if not schedule.id %}required{% endif %} name="schedule[user]">
+    </select>
+</div>
+<div>
+    <label for="schedule_pc">Computer</label>
+    <select id="schedule_pc" {% if not schedule.id %}required{% endif %} name="schedule[pc]">
+    </select>
+</div>
 <div>
     {% if schedule.computer %}
         <label>Current computer: №{{ schedule.computer.id }}</label>
@@ -12,4 +29,43 @@
 </div>
     <button class="btn">{{ button_label|default('Save') }}</button>
 
+<div hidden>
+    {{ form_rest(form) }}
+</div>
 {{ form_end(form) }}
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        let form = document.querySelector("form");
+        let users = await fetch('{{ path('get_users') }}').then(data => data.json()).then(data => data['data'])
+        let pcs = await fetch('{{ path('get_computers') }}').then(data => data.json()).then(data => data['data'])
+        let selectUser = document.getElementById('schedule_user')
+        let selectPc = document.getElementById('schedule_pc')
+        form.addEventListener("submit", (e) => {
+            let inputUser = document.createElement("input");
+            inputUser.setAttribute("id", "schedule_user");
+            inputUser.setAttribute("name", "schedule[user]");
+            inputUser.setAttribute("value", selectUser.value);
+            inputUser.setAttribute("type", "hidden");
+            form.appendChild(inputUser);
+            let inputPc = document.createElement("input");
+            inputPc.setAttribute("id", "schedule_pc");
+            inputPc.setAttribute("name", "schedule[pc]");
+            inputPc.setAttribute("value", selectPc.value);
+            inputPc.setAttribute("type", "hidden");
+            form.appendChild(inputPc);
+            form.submit();
+        })
+        let html = '<option></option>'
+        let user
+        for (let i=0;i<users.length;i++) {
+            user = users[i]
+            html += `<option value="${user.id}">${user.surname + " " + user.name}</option>`
+        }
+        let htmlPc = '<option></option>'
+        for (const pc of pcs) {
+            htmlPc += `<option value="${pc.id}">Компьютер №${pc.id}</option>`
+        }
+        selectPc.innerHTML = htmlPc
+        selectUser.innerHTML = html
+    })
+</script>

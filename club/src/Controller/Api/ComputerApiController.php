@@ -31,7 +31,6 @@ use Symfony\Component\Serializer\SerializerInterface;
  *     description="Assecc denied",
  *     @OA\JsonContent(ref="#/components/schemas/ApiException")
  * )
- * @IsGranted("ROLE_ADMIN")
  */
 #[Route('/computer')]
 class ComputerApiController extends AbstractController
@@ -68,6 +67,7 @@ class ComputerApiController extends AbstractController
      * )
      *
      */
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('', name: 'create_computer', methods: ['POST'])]
     public function createComputer(
         Request             $request,
@@ -119,13 +119,36 @@ class ComputerApiController extends AbstractController
      * )
      *
      */
-    #[Route('/{computer}', name: 'get_computer', methods: ['GET'])]
+    #[Route('/{computer<\d+>}', name: 'get_computer', methods: ['GET'])]
     public function getComputer(
         Computer $computer
     ): JsonResponse
     {
         return $this->json(data: [
             'data' => $computer
+        ], context: ['groups' => ['get_computer']]);
+    }
+
+    /**
+     * Получение списка компьютеров
+     *
+     * @OA\Response(
+     *    response="200",
+     *    description="Ok",
+     *    @OA\JsonContent(
+     *         @OA\Property(property="data", type="array",
+     *              @OA\Items(ref=@Model(type="App\Entity\Computer", groups={"get_computer"}))
+     *         )
+     *    )
+     * )
+     */
+    #[Route('/all', name: 'get_computers', methods: ['GET'])]
+    public function getAllComputer(
+        ComputerRepository $computerRepository
+    ): JsonResponse
+    {
+        return $this->json(data: [
+            'data' => $computerRepository->findAll()
         ], context: ['groups' => ['get_computer']]);
     }
 }

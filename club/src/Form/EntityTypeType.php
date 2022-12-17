@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,6 +20,10 @@ class EntityTypeType extends AbstractType
             ->add('file', CollectionType::class, [
                 'mapped' => false,
                 'entry_type' => FileType::class,
+                'allow_extra_fields' => true
+            ])
+            ->add('type', ChoiceType::class, [
+                'choices' => \App\Helper\EnumType\EntityType::getTypesForForm()
             ])
         ;
     }

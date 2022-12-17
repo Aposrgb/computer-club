@@ -5,6 +5,9 @@ namespace App\Controller\Admin;
 use App\Entity\EntityType;
 use App\Form\EntityTypeType;
 use App\Repository\EntityTypeRepository;
+use App\Service\EntityTypeService;
+use App\Service\FileUploadService;
+use App\Service\ValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +26,7 @@ class EntityTypeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_entity_type_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, EntityTypeService $service, ValidatorService $validatorService): Response
     {
         $entityType = new EntityType();
         $form = $this->createForm(EntityTypeType::class, $entityType);
